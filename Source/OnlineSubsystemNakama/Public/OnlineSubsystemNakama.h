@@ -64,6 +64,7 @@ private:
 
 	Nakama::NClientPtr Client;
 	float TickTimer;
+	TOptional<float> TickInterval;
 };
 
 typedef TSharedPtr<FOnlineSubsystemNakama, ESPMode::ThreadSafe> FOnlineSubsystemNakamaPtr;

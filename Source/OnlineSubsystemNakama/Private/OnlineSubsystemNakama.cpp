@@ -26,7 +26,7 @@ IOnlineIdentityPtr FOnlineSubsystemNakama::GetIdentityInterface() const
 bool FOnlineSubsystemNakama::Tick(float DeltaTime)
 {
 	TickTimer += DeltaTime;
-    if(TickTimer >= 50.0f/1000.0f) // ToDo: Use tick period from INI
+    if(TickInterval.IsSet() && TickTimer >= TickInterval.GetValue())
     {
     	TickTimer = 0.0f;
     	
@@ -43,17 +43,51 @@ bool FOnlineSubsystemNakama::Init()
 {
 	UE_LOG_ONLINE(VeryVerbose, TEXT("FOnlineSubsystemNakama::Init()"));
 	
-	// Default Client Parameters
-	// ToDo: Use config from INI
-	const FString ServerKey = FString(TEXT("defaultkey"));
-	const FString Host = FString(TEXT("localhost"));
-	constexpr int32 Port = 7350;
-	constexpr bool bUserSSL = false;
+	FString ServerKey = FString(TEXT("defaultkey"));
+	if(!GConfig->GetString(
+		TEXT("OnlineSubsystemNakama"),
+		TEXT("ServerKey"),
+		ServerKey,
+		GEngineIni))
+	{
+		UE_LOG_ONLINE(Error, TEXT("Please setup `ServerKey` for OnlineSubsystemNakama in Engine INI file."));
+		return false;
+	}
+	
+	FString Host = FString(TEXT("localhost"));
+	if(!GConfig->GetString(
+		TEXT("OnlineSubsystemNakama"),
+		TEXT("ServerUrl"),
+		Host,
+		GEngineIni))
+	{
+		UE_LOG_ONLINE(Error, TEXT("Please setup `ServerURL` for OnlineSubsystemNakama in Engine INI file."));
+		return false;
+	}
+	
+	int32 Port = 7350;
+	GConfig->GetInt(TEXT("OnlineSubsystemNakama"), TEXT("ServerPort"), Port, GEngineIni);
+
+	bool bUseSSL = false;
+	GConfig->GetBool(TEXT("OnlineSubsystemNakama"), TEXT("UseSSL"), bUseSSL, GEngineIni);
+
+	int32 TickIntervalMS = 0;
+	if(
+		GConfig->GetInt(TEXT("OnlineSubsystemNakama"), TEXT("TickIntervalMS"), TickIntervalMS, GEngineIni)
+		&& TickIntervalMS > 0)
+	{
+		TickInterval.Emplace(TickIntervalMS / 1000.0f);
+	}
+	else
+	{
+		UE_LOG_ONLINE(Error, TEXT("Please setup `TickIntervalMS` for OnlineSubsystemNakama in Engine INI file."));
+		return false;
+	}
 
 	NClientParameters Parameters;
 	Parameters.serverKey = FNakamaUtils::UEStringToStdString(ServerKey);
 	Parameters.host = FNakamaUtils::UEStringToStdString(Host);
-	Parameters.ssl = bUserSSL;
+	Parameters.ssl = bUseSSL;
 	Parameters.port = Port;
 	
 	Client = NakamaCoreClientFactory::createNakamaClient(Parameters, NLogLevel::Info);
