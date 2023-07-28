@@ -1,13 +1,13 @@
-﻿{
+{
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "OnlineSubsystemNakama",
-	"Description": "",
+	"Description": "An integration of the Nakama with Unreal Engine Online Subsystem",
 	"Category": "Other",
 	"CreatedBy": "Peerawit Canthasaksiri",
-	"CreatedByURL": "",
-	"DocsURL": "",
+	"CreatedByURL": "https://github.com/prwc/nakama-oss",
+	"DocsURL": "https://github.com/prwc/nakama-oss",
 	"MarketplaceURL": "",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
@@ -29,5 +29,6 @@
 			"Name": "Nakama",
 			"Enabled": true
 		}
-	]
+	],
+	"SupportURL": ""
 }
