@@ -26,7 +26,17 @@ To use this plugin in your Unreal Engine game project, follow these steps:
 4. Open your Unreal Engine project.
 5. Navigate to the "Edit" menu and click on "Plugins."
 6. Look for the "Online Subsystem Nakama" plugin in the list, and make sure it's enabled.
-7. You're all set! You can now start using Nakama's online services in your Unreal Engine game through Online Subsystem
+7. Add config below to `DefaultEngine.ini` or your specific platforms under "Config" folder
+```
+   [OnlineSubsystemNakama]
+   bEnable=True
+   ServerKey=defaultkey
+   ServerUrl=localhost
+   ServerPort=7350
+   UseSSL=False
+   TickIntervalMS=50
+```
+8. You're all set! You can now start using Nakama's online services in your Unreal Engine game through Online Subsystem
 
 Please note that this plugin requires the official Nakama plugin as a dependency. You can find it at [https://github.com/heroiclabs/nakama-unreal](https://github.com/heroiclabs/nakama-unreal). 
 
